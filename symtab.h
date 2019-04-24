@@ -23,15 +23,15 @@ struct scopeTable{
 
 int traverse(struct scopeTable *head);
 
-int addSym(struct scopeTable *head, char* givenId, int lineno, int conType, int dataType, int scope, int parentScope, long startAddress);
+int addSym(struct scopeTable *head, char* givenId, int lineno, int conType, int dataType, long int strReq);
 
-int setVal(struct scopeTable *head, char *id, int lineno);
+int setVal(struct scopeTable *head, char *id, int lineno, int data);
 
-int addLookSym(struct scopeTable *head, char* givenId, int add, int lineno, int conType, int data);
+//int addLookSym(struct scopeTable *head, char* givenId, int add, int lineno, int conType, int data);
 
 int findLen(struct scopeTable *head, char *givenId); // To find the length of an array	
 
-struct scopeTable* addScope(struct scopeTable *head);
+struct scopeTable* addScope(struct scopeTable *head, int scopeNumber);
 
 struct scopeTable* delScope(struct scopeTable *head);
 

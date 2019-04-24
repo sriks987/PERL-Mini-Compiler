@@ -27,7 +27,7 @@ int addSym(struct scopeTable *head, char* givenId, int lineno, int conType, int 
 	        head->symArr[newIndex].dataType = dataType;
 	}
 	else if(conType == 2){
-	        head->symArr[newIndex].strReq = data;
+	        head->symArr[newIndex].strReq = strReq;
 	}
 	head->symArr[newIndex].valid = 1;
 	head->symArr[newIndex].funcScope = head->scopeNum + 1;
@@ -49,12 +49,12 @@ int setVal(struct scopeTable *head, char *id, int lineno, int data){
 				} 
 			}
 		}
-		head = head->outer;
+		head = head->parent;
 	}
 	return 0;	
 }
 
-int addLookSym(struct scopeTable *head, char* givenId, int add, int lineno, int conType, int data){  
+/*int addLookSym(struct scopeTable *head, char* givenId, int add, int lineno, int conType, int data){  
 	int found = 0;
 	for(int i=0; i<head->num; i++){
 		if(strcmp(head->symArr[i].id, givenId)==0){
@@ -67,8 +67,19 @@ int addLookSym(struct scopeTable *head, char* givenId, int add, int lineno, int 
 		return addSym(head, givenId, lineno, conType, data);
 	}
 	return 0;
-}
+}*/
 
+int findLen(struct scopeTable *head, char *givenId ){
+	while(head!=NULL){
+		for(int i=0; i<head->num; i++){
+			if(strcmp(head->symArr[i].id, givenId)==0){
+				return head->symArr[i].strReq / 4;
+			}
+		}
+		head = head->parent;
+	}
+	return -1;
+}
 
 struct scopeTable* addScope(struct scopeTable *head, int scopeNumber){
 	struct scopeTable *temp = malloc(sizeof(struct scopeTable));
@@ -78,9 +89,11 @@ struct scopeTable* addScope(struct scopeTable *head, int scopeNumber){
 	temp->num = 0;
 	temp->parent = head;
 	temp->numChild = 0;
-	tmep->scopeNum = scopeNumber;
-	head->children[numChild] = temp;
-	head->numChild++;
+	temp->scopeNum = scopeNumber;
+	if (head!=NULL){
+		head->children[head->numChild] = temp;
+		head->numChild++;
+	}
 	head = temp;
 	return head;
 }
@@ -92,7 +105,7 @@ struct scopeTable* delScope(struct scopeTable *head){
 	return head;
 }
 
-struct scopTable* leaveScope(struct scopeTable *head){
+struct scopeTable* leaveScope(struct scopeTable *head){
 	head = head->parent;
 	return head;
 }
@@ -106,7 +119,7 @@ struct symNode getVal(struct scopeTable *head, char *id, int *succ, int lineno){
 				return head->symArr[i];
 			}
 		}
-		head = head->outer;
+		head = head->parent;
 	}
 	*succ = 0;	// if symbol doesn't exist in any scope
 	struct symNode res;

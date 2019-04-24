@@ -23,16 +23,17 @@ comment "#"[^\n]*
 "if"      { count(); return(IF); }
 "elseif"  { count(); return(ELSEIF); }
 "else"    { count(); return(ELSE); }
+"break"	  { count(); return(BREAK);}
 
 ([0-9])*  				{ count(); yylval.ival = atoi(yytext); return(INT);}
 ([0-9])+([Ee][+-]?([0-9])+)		{ count(); yylval.doub = atof(yytext); return(DOUBLE); }
 ([0-9])*"."([0-9])+([Ee][+-]?([0-9])+)?	{ count(); yylval.doub = atof(yytext); return(DOUBLE); }
 ([0-9])+"."([0-9])*([Ee][+-]?([0-9])+)?	{ count(); yylval.doub = atof(yytext); return(DOUBLE); }
 
-">"  { count(); return(RELOP); }
-"<"  { count(); return(RELOP); }
-">=" { count(); return(RELOP); }
-"<=" { count(); return(RELOP); }
+">"  { count(); return('>'); }
+"<"  { count(); return('<'); }
+">=" { count(); return(GE); }
+"<=" { count(); return(LE); }
 "==" { count(); return(EQ); }
 "!=" { count(); return(NE); }
 
@@ -43,9 +44,9 @@ comment "#"[^\n]*
 "next"   { count(); return(NEXT); }
 "return" { count(); return(RETURN); }
 
-"int"	{ count(); return(TYPE_INT);}
-"double"	{ count(); return(TYPE_DOUBLE);}
-"String"	{ count(); return(TYPE_STRING);}
+"int"	{ count(); return(TYPESPECIFIER);}
+"double"	{ count(); return(TYPESPECIFIER);}
+"String"	{ count(); return(STRING);}
 
 {id}      { count(); 
 		if(yyleng > 31){
